@@ -227,4 +227,82 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
   }
 });
 
+// @route   PUT api/profile/education
+// @desc    Add profile education
+// @access  Private
+router.put('/education', 
+  [
+    auth, [
+      check('school', 'School is required').not().isEmpty(),
+      check('degree', 'Degree is required').not().isEmpty(),
+      check('from', 'From date is required').not().isEmpty(),
+      check('fieldofstudy', 'Field of study is required').not().isEmpty()
+    ] 
+  ], 
+  async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    // Receive what user enters
+    const {
+      school,
+      degree,
+      fieldofstudy,
+      from,
+      to,
+      current,
+      description
+    } = req.body;
+    // Set to variable newExp
+    const newEdu = {
+      school,
+      degree,
+      fieldofstudy,
+      from,
+      to,
+      current,
+      description
+    }
+    // Try to fins user and apply changes
+    try {
+      const profile = await Profile.findOne({ user: req.user.id });
+      // Unshift pushs the new entry to the front, could use push too
+      profile.education.unshift(newEdu);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      req.status(500).send('Server Error');
+    }
+  }
+);
+
+// @route   DELETE api/profile/education/:exp_id
+// @desc    Delete education from profile
+// @access  Private
+router.delete('/education/:edu_id', auth, async (req, res) => {
+  try {
+    // another way to delete education
+    // const profile = await Profile.findOneAndUpdate(
+    //   { user: req.user.id },
+    //   { $pull: { education: { _id: req.params.exp_id } } },
+    //   { new: true }
+    // );
+    const profile = await Profile.findOne({ user: req.user.id });
+    // Get remove index
+    const removeIndex = profile.education.map(item => item.id).indexOf(req.params.edu_id);
+    if (removeIndex !== -1) profile.education.splice(removeIndex, 1);
+
+    await profile.save();
+
+    res.json(profile);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
