@@ -10,16 +10,8 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/matthewwirtz/Devconnector.git"
-  },
   "author": "Matthew Wirtz",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/matthewwirtz/Devconnector/issues"
-  },
-  "homepage": "https://github.com/matthewwirtz/Devconnector#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "config": "^3.2.2",
@@ -28,6 +20,7 @@
     "gravatar": "^1.8.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.6.10",
+    "node": "^12.9.1",
     "request": "^2.88.0"
   },
   "devDependencies": {
